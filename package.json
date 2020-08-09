@@ -1,10 +1,11 @@
 {
-  "name": "amino.ts",
+  "name": "aminoapps-reapi",
   "description": "Unofficial client for working with rest-api aminoapps",
-  "version": "1.0.0",
-  "homepage": "https://github.com/osm1um/amino.ts/#readme",
-  "author": "osm1um",
+  "version": "1.0.7",
+  "homepage": "https://github.com/ParadiseFallen/AminoappsREAPI",
+  "author": "ParadiseFallen",
   "main": "build/index.js",
+  "types": "build/index.d.ts",
   "scripts": {
     "build": "tsc --project tsconfig.json",
     "start": "node .",

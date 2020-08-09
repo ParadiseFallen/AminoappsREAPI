@@ -1,13 +1,15 @@
 {
     "exclude": [
-        "node_modules"
+        "node_modules",
+        "build"
     ],
 
     "compilerOptions": {
         "target": "ES2017",
         "module": "commonjs",
-
-        "removeComments": true,
+        "declaration": true,
+        "strict": true,
+        "esModuleInterop": true,
         "allowSyntheticDefaultImports": true,
 
         "rootDir": "src",
