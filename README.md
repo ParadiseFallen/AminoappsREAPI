@@ -7,7 +7,7 @@ This repository is based on https://github.com/beryll1um/amino.ts
 ## How to Use
 The client is written in **typescript**. If you want to use it, then you will need to install the dependencies and compile the code. You will also need a device identifier, look for it on the Internet, or take your own. If you want to get your device identifier, you need to view the traffic of the client application and capture the request to a specific endpoint: https://service.narvii.com/api/v1/g/s/device.
 
-We have our own [documentation](https://beryll1um.github.io/amino.ts/) with which you can quickly figure out what's what!
+We have our own [documentation](https://github.com/ParadiseFallen/AminoappsREAPI/wiki) with which you can quickly figure out what's what!
 
 ## Examples
 #### Client initialization
