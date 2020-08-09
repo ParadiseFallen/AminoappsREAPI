@@ -1,7 +1,8 @@
-# amino.ts
+# AminoappsREAPI
 [![Build Status](https://travis-ci.org/beryll1um/amino.ts.svg?branch=master)](https://travis-ci.org/beryll1um/amino.ts.svg?branch=master)
 
 Unofficial client for working with rest-api aminoapps.
+This repository is based on https://github.com/beryll1um/amino.ts
 
 ## How to Use
 The client is written in **typescript**. If you want to use it, then you will need to install the dependencies and compile the code. You will also need a device identifier, look for it on the Internet, or take your own. If you want to get your device identifier, you need to view the traffic of the client application and capture the request to a specific endpoint: https://service.narvii.com/api/v1/g/s/device.
