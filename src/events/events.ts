@@ -76,10 +76,9 @@ export default class EventHandler extends Events.EventEmitter {
                             member = new AminoMember(ref_client, community, struct.o.chatMessage.author.uid).refresh();
                             community.cache.members.push(member);
                         }
-
-                        this.emit("message",
-                            new AminoMessage(ref_client, community)._set_object(struct.o.chatMessage, thread, member)
-                        );
+                        let recievdMessage = new AminoMessage(ref_client, community)._set_object(struct.o.chatMessage, thread, member)
+                        if(recievdMessage.author.id!==recievdMessage.community.me.id) //if message not mine
+                            this.emit("message", recievdMessage);
                     }
                     break;
                 }

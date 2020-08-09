@@ -1,7 +1,7 @@
 {
   "name": "aminoapps-reapi",
   "description": "Unofficial client for working with rest-api aminoapps",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "homepage": "https://github.com/ParadiseFallen/AminoappsREAPI",
   "author": "ParadiseFallen",
   "main": "build/index.js",
@@ -17,5 +17,8 @@
     "sync-request": "^6.1.0",
     "typescript": "^3.8.3",
     "ws": "^7.2.3"
+  },
+  "devDependencies": {
+    "@types/ws": "^7.2.6"
   }
 }
