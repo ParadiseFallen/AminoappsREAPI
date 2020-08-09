@@ -1,68 +1,35 @@
 # AminoappsREAPI
-[![Build Status](https://travis-ci.org/beryll1um/amino.ts.svg?branch=master)](https://travis-ci.org/beryll1um/amino.ts.svg?branch=master)
-
 Unofficial client for working with rest-api aminoapps.
 This repository is based on https://github.com/beryll1um/amino.ts
-
-## How to Use
-The client is written in **typescript**. If you want to use it, then you will need to install the dependencies and compile the code. You will also need a device identifier, look for it on the Internet, or take your own. If you want to get your device identifier, you need to view the traffic of the client application and capture the request to a specific endpoint: https://service.narvii.com/api/v1/g/s/device.
-
-We have our own [documentation](https://github.com/ParadiseFallen/AminoappsREAPI/wiki) with which you can quickly figure out what's what!
-
-## Examples
-#### Client initialization
-Initialization of the client is extremely simple.
-```javascript
-let client: AminoClient = new AminoClient(
-    "address@gmail.com",
-    "password",
-    "device_id"
-);
+```typescript 
+import * as api from 'aminoapps-reapi' 
+let client: api.AminoClient = new api.AminoClient(
+    "address@gmail.com", //email addres
+    "password", //account password
+    "device_id" //your device id
+    client.onMessage((message: api.AminoMessage) => 
+    {
+        message.reply('Ok!')
+    })
 ```
+[How to get device id](https://github.com/ParadiseFallen/AminoappsREAPI/wiki/Device-id)
+## Installation
+This is a [Typescript](https://www.typescriptlang.org/) module available through the [npm registry](https://www.npmjs.com/).
 
-#### Checking active users
-You must be sure that the returned data is not empty. This sometimes happens.
-```javascript
-client.communities.forEach((community: AminoCommunity) => {
-    let members: IAminoMemberStorage = community.get_online_members(0, 10);
-    members.forEach((member: AminoMember) => {
-        console.log(member.name);
-    });
-});
-```
+If this is a brand new project, make sure to create a `package.json` first with
+the [`npm init` command](https://docs.npmjs.com/creating-a-package-json-file).
 
-#### Event on message
-Everything here is also quite simple.
-```javascript
-client.on("message", (message: AminoMessage) => {
-    message.reply(`Hi, ${message.author.name}!`);
-});
-```
-
-## Build
-If you want to use the library, you need to choose one of two ways: compile it and use **javascript**, or write code in **typescript**.
-
-Building a library is extremely simple! Copy the repository and do the following in the directory:
+Installation is done using the
+[`npm install` command](https://docs.npmjs.com/getting-started/installing-npm-packages-locally):
 ```bash
-npm install # Installing dependencies
-npm run build # Building typescript code
+$ npm i aminoapps-reapi
 ```
+## Docs & Community
+* [Documentation](https://github.com/ParadiseFallen/AminoappsREAPI/wiki/)
+## License
 
-After build is complete, you will see the **build** directory. This directory contains the compiled library. Note that it needs **node_modules** dependencies!
-
-After you can use this library:
-```javascript
-const Amino = require("@amino.ts/path/to/the/build/index");
-
-let client = new Amino.default(
-    "address@gmail.com",
-    "password",
-    "device_id"
-);
-```
-
-If you want to use **typescript**, then create your own configuration for building and including **index.ts**.
-
+  [MIT](LICENSE)
+  
 ## Modules
 + `typescript`
 + `@types/node`
