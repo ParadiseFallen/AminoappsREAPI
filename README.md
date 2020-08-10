@@ -1,4 +1,5 @@
 # AminoappsREAPI
+![alt tag](https://media-exp1.licdn.com/dms/image/C4D1BAQEwoHfh2Uwlkg/company-background_10000/0?e=2159024400&v=beta&t=rTGD7YioV171nHX4jESQRUe2IXTNlD4pQJwpITeshQk)
 Unofficial client for working with rest-api aminoapps.
 ```typescript 
 import * as api from 'aminoapps-reapi' 
