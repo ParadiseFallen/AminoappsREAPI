@@ -1,6 +1,5 @@
 # AminoappsREAPI
 Unofficial client for working with rest-api aminoapps.
-This repository is based on https://github.com/beryll1um/amino.ts
 ```typescript 
 import * as api from 'aminoapps-reapi' 
 let client: api.AminoClient = new api.AminoClient(
