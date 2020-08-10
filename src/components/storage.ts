@@ -1,4 +1,4 @@
-import AminoClient, { AminoComponentBase } from ".."
+import AminoClient, { AminoComponentBase } from "../index"
 
 /**
  * Base class for all storages
@@ -36,9 +36,8 @@ export default abstract class StorageBase<T extends AminoComponentBase> extends 
     /**
      * refresh data
      */
-    public refresh()
-    {
-        this.forEach(i=>i.refresh())
+    public refresh() {
+        this.forEach(i => i.refresh())
         return this
     }
 }

@@ -1,10 +1,13 @@
-import AminoClient, { StorageBase, AminoBlog, AminoCommunity, AminoMember } from "../.."
-
+import AminoClient from "../../index"
+import AminoMember from "../member/AminoMember"
+import AminoCommunity from "../community/AminoCommunity"
+import StorageBase from "../storage"
+import AminoBlog from "../blog/AminoBlog"
 /**
  * Class for storing blog objects
  */
-export class AminoBlogStorage extends StorageBase<AminoBlog> {
-    
+export default class AminoBlogStorage extends StorageBase<AminoBlog> {
+
     constructor(client: AminoClient, community: AminoCommunity, array?: any) {
         super(client, AminoBlogStorage.prototype)
         if (array) {
@@ -29,5 +32,5 @@ export class AminoBlogStorage extends StorageBase<AminoBlog> {
     protected componentConstructor(client: AminoClient, elementData: any): AminoBlog {
         return null
     }
-    
+
 }

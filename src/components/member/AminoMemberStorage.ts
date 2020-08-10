@@ -1,10 +1,12 @@
-import AminoClient, { StorageBase, AminoMember, AminoCommunity } from "../.."
-
+import AminoClient from "../../index"
+import AminoMember from "../member/AminoMember"
+import AminoCommunity from "../community/AminoCommunity"
+import StorageBase from "../storage"
 /**
  * Class for storing members objects REWORK!
  */
-export class AminoMemberStorage extends StorageBase<AminoMember> {
-    
+export default class AminoMemberStorage extends StorageBase<AminoMember> {
+
     constructor(client: AminoClient, community: AminoCommunity, array?: any) {
         super(client, AminoMemberStorage.prototype)
         if (array) {
@@ -30,8 +32,8 @@ export class AminoMemberStorage extends StorageBase<AminoMember> {
     /**
      * Call methods to update in structure objects
      */
-    public reload() : AminoMemberStorage {
-        
+    public reload(): AminoMemberStorage {
+
         return this
     }
 }

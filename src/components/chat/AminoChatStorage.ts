@@ -1,10 +1,13 @@
-import AminoClient, { StorageBase, AminoChat, AminoCommunity, AminoMember } from "../.."
-
+import AminoClient from "../../index"
+import AminoChat from "../chat/AminoChat"
+import AminoMember from "../member/AminoMember"
+import AminoCommunity from "../community/AminoCommunity"
+import StorageBase from "../storage"
 /**
  * Class for storing thread objects
  */
-export class AminoChatStorage extends StorageBase<AminoChat> {
-    
+export default class AminoChatStorage extends StorageBase<AminoChat> {
+
     constructor(client: AminoClient, community: AminoCommunity, array?: any) {
         super(client, AminoChatStorage.prototype)
         if (array) {

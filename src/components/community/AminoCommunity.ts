@@ -1,4 +1,13 @@
-import AminoClient, { request,AminoComponentBase, AminoMember, IAminoCache, AminoChat, APIEndpoint, requestAsync, AminoMemberStorage, AminoBlogStorage, AminoChatStorage } from "../.."
+import AminoClient from "../../index"
+import AminoComponentBase from "../AminoComponentBase"
+import AminoMember from "../member/AminoMember"
+import AminoMemberStorage from "../member/AminoMemberStorage"
+import AminoBlogStorage from "../blog/AminoBlogStorage"
+import IAminoCache from "../cache"
+import AminoChat from "../chat/AminoChat"
+import AminoChatStorage from "../chat/AminoChatStorage"
+import APIEndpoint from "../APIEndpoint"
+import { request, requestAsync } from "../request"
 
 export declare type blog_type = ('featured-more' | 'featured' | 'blog-all')
 export declare type thread_sort = ('recommended' | 'popular' | 'latest')
@@ -7,7 +16,7 @@ export declare type thread_type = ('joined-me' | 'public-all')
 /**
  * Class for working with communities
  */
-export class AminoCommunity extends AminoComponentBase{
+export default class AminoCommunity extends AminoComponentBase {
 
     public id: number
 
@@ -50,7 +59,7 @@ export class AminoCommunity extends AminoComponentBase{
      * @param {string} [nickname] string
      */
     public setNickname(nickname: string) {
-        let response = request("POST", APIEndpoint.compileProfile(this.id,this.me.id), {
+        let response = request("POST", APIEndpoint.compileProfile(this.id, this.me.id), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session
             },
@@ -66,8 +75,8 @@ export class AminoCommunity extends AminoComponentBase{
      * Set account description
      * @param {string} [description] string
      */
-    public async setDescription(description: string) : Promise<any> {
-        return await requestAsync("POST", APIEndpoint.compileProfile(this.id,this.me.id), {
+    public async setDescription(description: string): Promise<any> {
+        return await requestAsync("POST", APIEndpoint.compileProfile(this.id, this.me.id), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session
             },
@@ -85,7 +94,7 @@ export class AminoCommunity extends AminoComponentBase{
      * @param {number} [size] number of records to read
      */
     public getOnlineMembers(start: number = 0, size: number = 10): AminoMemberStorage {
-        let response = request("GET", APIEndpoint.compileGetOnlineMembers(this.id,start,size), {
+        let response = request("GET", APIEndpoint.compileGetOnlineMembers(this.id, start, size), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session
             }
@@ -101,8 +110,8 @@ export class AminoCommunity extends AminoComponentBase{
      * @param {number} [size] number of blogs to read
      */
     public getBlogs(type: blog_type, start: number = 1, size: number = 10): AminoBlogStorage {
-        
-        let response = request("GET", APIEndpoint.compileGetBlogs(this.id,type,start,size), {
+
+        let response = request("GET", APIEndpoint.compileGetBlogs(this.id, type, start, size), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session
             }
@@ -119,7 +128,7 @@ export class AminoCommunity extends AminoComponentBase{
      * @param {thread_sort} [sort] sorting type
      */
     public getChats(type: thread_type, sort: thread_sort = "latest", start: number = 1, size: number = 10): AminoChatStorage {
-        let response = request("GET", APIEndpoint.compileGetThreads(this.id,type,sort,start,size), {
+        let response = request("GET", APIEndpoint.compileGetThreads(this.id, type, sort, start, size), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session,
                 "NDCDEVICEID": this.client.device
@@ -148,8 +157,8 @@ export class AminoCommunity extends AminoComponentBase{
         this.description = object.community.content
         this.membersCount = object.community.membersCount
 
-        this.me =  new AminoMember(this.client, this, object.currentUserInfo.userProfile.uid).refresh() //why refresh if this new?
-        this.creator =  new AminoMember(this.client, this, object.community.agent.uid).refresh() //same
+        this.me = new AminoMember(this.client, this, object.currentUserInfo.userProfile.uid).refresh() //why refresh if this new?
+        this.creator = new AminoMember(this.client, this, object.community.agent.uid).refresh() //same
 
         this.invite = object.community.link
         this.createdTime = object.community.createdTime

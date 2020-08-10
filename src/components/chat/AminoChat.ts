@@ -1,5 +1,11 @@
-import AminoClient, { AminoComponentBase, AminoMember, AminoCommunity, AminoMessageStorage, APIEndpoint, AminoMessage,request } from "../.."
-
+import AminoClient from "../../index"
+import AminoComponentBase from "../AminoComponentBase"
+import AminoMember from "../member/AminoMember"
+import AminoCommunity from "../community/AminoCommunity"
+import AminoMessageStorage from "../message/AminoMessageStorage"
+import APIEndpoint from "../APIEndpoint"
+import AminoMessage from "../message/AminoMessage"
+import { request } from "../request"
 
 declare type image_type = ('image/png' | 'image/jpg')
 
@@ -12,7 +18,7 @@ export enum thread_type {
 /**
  * Class for working with chats
  */
-export class AminoChat extends AminoComponentBase {
+export default class AminoChat extends AminoComponentBase {
 
     public id: any
     public icon: string
@@ -46,8 +52,8 @@ export class AminoChat extends AminoComponentBase {
      * @param {number} [count] number of messages
      */
     public getMessageList(count: number = 10): AminoMessageStorage {
-        
-        let response = request("GET", APIEndpoint.compileGetMessageList(this.id,this.community.id,count), {
+
+        let response = request("GET", APIEndpoint.compileGetMessageList(this.id, this.community.id, count), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session
             }
@@ -62,7 +68,7 @@ export class AminoChat extends AminoComponentBase {
      * @param {string} [image] path to the image
      */
     public sendMessage(content: string): AminoMessage {
-        let response = request("POST", APIEndpoint.compileMessage(this.id,this.community.id), {
+        let response = request("POST", APIEndpoint.compileMessage(this.id, this.community.id), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session
             },
@@ -88,7 +94,7 @@ export class AminoChat extends AminoComponentBase {
         type: image_type,
         link: string
     }): AminoMessage {
-        let response = request("POST", APIEndpoint.compileMessage(this.id,this.community.id), {
+        let response = request("POST", APIEndpoint.compileMessage(this.id, this.community.id), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session
             },
@@ -119,7 +125,7 @@ export class AminoChat extends AminoComponentBase {
      * @param {image_type} [type] image type
      */
     public sendImage(image: Buffer, type: image_type): AminoMessage {
-        let response = request("POST", APIEndpoint.compileMessage(this.id,this.community.id), {
+        let response = request("POST", APIEndpoint.compileMessage(this.id, this.community.id), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session
             },
@@ -145,7 +151,7 @@ export class AminoChat extends AminoComponentBase {
      * @param {string} [audio] path to audio file
      */
     public sendAudio(audio: Buffer): AminoMessage {
-        let response = request("POST", APIEndpoint.compileMessage(this.id,this.community.id), {
+        let response = request("POST", APIEndpoint.compileMessage(this.id, this.community.id), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session
             },
@@ -168,7 +174,7 @@ export class AminoChat extends AminoComponentBase {
      * Method for join to thread
      */
     public join(): void {
-        let response = request("POST", APIEndpoint.compileThreadWithMember(this.id,this.community.id,this.community.me.id), {
+        let response = request("POST", APIEndpoint.compileThreadWithMember(this.id, this.community.id, this.community.me.id), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session
             }
@@ -179,8 +185,8 @@ export class AminoChat extends AminoComponentBase {
      * Method for leaving from thread
      */
     public leave(): void {
-        
-        let response = request("DELETE", APIEndpoint.compileThreadWithMember(this.id,this.community.id,this.community.me.id), {
+
+        let response = request("DELETE", APIEndpoint.compileThreadWithMember(this.id, this.community.id, this.community.me.id), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session
             }
@@ -191,7 +197,7 @@ export class AminoChat extends AminoComponentBase {
      * Method for updating the structure, by re-requesting information from the server
      */
     public refresh(): AminoChat {
-        let response = request("GET", APIEndpoint.compileThread(this.id,this.community.id), {
+        let response = request("GET", APIEndpoint.compileThread(this.id, this.community.id), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session
             }
@@ -205,7 +211,7 @@ export class AminoChat extends AminoComponentBase {
      * @param {any} [object] json thread structure
      * @param {AminoMember} [creator] creator object
      */
-    setObject(object: any,creator?: AminoMember): AminoChat {
+    setObject(object: any, creator?: AminoMember): AminoChat {
         this.id = object.threadId
 
         this.icon = object.icon

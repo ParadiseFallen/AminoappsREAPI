@@ -1,14 +1,13 @@
-import AminoClient from "..";
+import AminoClient from "../index";
 /**
  * component base
  */
-export abstract class AminoComponentBase
-{
+export default abstract class AminoComponentBase {
     /**
      * ref to AminoClient
      */
     protected client: AminoClient
-    
+
     /**
      *ctor
      */
@@ -19,7 +18,7 @@ export abstract class AminoComponentBase
     /**
      * All components can update data by request server again
      */
-    abstract refresh():AminoComponentBase
+    abstract refresh(): AminoComponentBase
     /**
      * Used by refresh() to set data
      * @param object object with data

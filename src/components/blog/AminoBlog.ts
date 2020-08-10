@@ -1,9 +1,15 @@
-import AminoClient, { AminoComponentBase, AminoMember, AminoCommunity, AminoCommentStorage, APIEndpoint,request } from "../.."
+import AminoClient from "../../index"
+import AminoComponentBase from "../AminoComponentBase"
+import AminoMember from "../member/AminoMember"
+import AminoCommunity from "../community/AminoCommunity"
+import AminoCommentStorage from "../comment/AminoCommentStorage"
+import APIEndpoint from "../APIEndpoint"
+import { request } from "../request"
 /**
  * Class for working with blogs
  */
-export class AminoBlog extends AminoComponentBase{
-   
+export default class AminoBlog extends AminoComponentBase {
+
     public id: string
     public title: string
     public content: string
@@ -34,8 +40,8 @@ export class AminoBlog extends AminoComponentBase{
      * @param {number} [size] count by start
      */
     public getComments(start: number = 1, size: number = 10): AminoCommentStorage {
-        
-        let response = request("GET", APIEndpoint.compileGetComents(this.id,this.community.id,start,size), {
+
+        let response = request("GET", APIEndpoint.compileGetComents(this.id, this.community.id, start, size), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session
             }
@@ -48,7 +54,7 @@ export class AminoBlog extends AminoComponentBase{
      * Method for updating the structure, by re-requesting information from the server
      */
     public refresh(): AminoBlog {
-        let response = request("GET", APIEndpoint.compileGetBlog(this.id,this.community.id), {
+        let response = request("GET", APIEndpoint.compileGetBlog(this.id, this.community.id), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session
             }

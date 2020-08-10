@@ -4,28 +4,28 @@ import { request, requestAsync } from "./components/request"
 import EventHandler, { event_type } from "./events/events"
 ///import components
 //community
-import { AminoCommunity } from "./components/community/AminoCommunity"
-import { AminoCommunityStorage } from "./components/community/AminoCommunityStorage"
+import AminoCommunity from "./components/community/AminoCommunity"
+import AminoCommunityStorage from "./components/community/AminoCommunityStorage"
 //member
-import { AminoMember } from "./components/member/AminoMember"
-import { AminoMemberStorage } from "./components/member/AminoMemberStorage"
+import AminoMember from "./components/member/AminoMember"
+import AminoMemberStorage from "./components/member/AminoMemberStorage"
 //chat
-import { AminoChat, thread_type } from "./components/chat/AminoChat"
-import { AminoChatStorage } from "./components/chat/AminoChatStorage"
+import AminoChat, { thread_type } from "./components/chat/AminoChat"
+import AminoChatStorage from "./components/chat/AminoChatStorage"
 //message
-import { AminoMessage, message_type } from "./components/message/AminoMessage"
-import { AminoMessageStorage } from "./components/message/AminoMessageStorage"
+import AminoMessage, { message_type } from "./components/message/AminoMessage"
+import AminoMessageStorage from "./components/message/AminoMessageStorage"
 //blog
-import { AminoBlog } from "./components/blog/AminoBlog"
-import { AminoBlogStorage } from "./components/blog/AminoBlogStorage"
+import AminoBlog from "./components/blog/AminoBlog"
+import AminoBlogStorage from "./components/blog/AminoBlogStorage"
 //comment
-import { AminoComment } from "./components/comment/AminoComment"
-import { AminoCommentStorage } from "./components/comment/AminoCommentStorage"
+import AminoComment from "./components/comment/AminoComment"
+import AminoCommentStorage from "./components/comment/AminoCommentStorage"
 //utils
-import { APIEndpoint } from "./components/APIEndpoint"
+import APIEndpoint from "./components/APIEndpoint"
 import IAminoCache from "./components/cache"
 import StorageBase from "./components/storage"
-import { AminoComponentBase }from "./components/AminoComponentBase"
+import AminoComponentBase from "./components/AminoComponentBase"
 
 export {
     request,

@@ -3,7 +3,7 @@ import { blog_type, thread_type, thread_sort } from "./community/AminoCommunity"
 /*
 *Static object that can build endpoint
 */
-export class APIEndpoint {
+export default class APIEndpoint {
     //[prefix]
     static Prefix: string = "http://service.narvii.com/api/v1"
     // [auth]
@@ -12,7 +12,7 @@ export class APIEndpoint {
 
 
     // [COMPLILE ENDPOINTS]
-    
+
     /**
      * construct api endpoint to get user profile ONLY GET
      * @param communityId 
@@ -60,7 +60,7 @@ export class APIEndpoint {
     static compileGetRecentBlogs(id: string, communityId: number, start: number, size: number): string {
         return APIEndpoint.Prefix + `/x${communityId}/s/blog?type=user&q=${id}&start=${start}&size=${size}`
     }
-    
+
     static compileMessageWithId(messageId: string, threadId: any, communityId: number): string {
         return APIEndpoint.compileMessage(threadId, communityId) + `/${messageId}`
     }

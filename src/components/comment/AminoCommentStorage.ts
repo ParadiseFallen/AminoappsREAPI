@@ -1,11 +1,15 @@
-import AminoClient, { StorageBase, AminoComment, AminoCommunity, AminoBlog, AminoMember } from "../.."
-
+import AminoClient from "../../index"
+import AminoComment from "../comment/AminoComment"
+import AminoBlog from "../blog/AminoBlog"
+import AminoMember from "../member/AminoMember"
+import AminoCommunity from "../community/AminoCommunity"
+import StorageBase from "../storage"
 /**
  * Class for storing comment objects
  */
-export class AminoCommentStorage extends StorageBase<AminoComment> {
-    
-    constructor(client: AminoClient, community: AminoCommunity, blog: AminoBlog, array?: any) {
+export default class AminoCommentStorage extends StorageBase<AminoComment> {
+
+    constructor(client: AminoClient, community: AminoCommunity, page: AminoBlog | AminoMember, array?: any) {
         super(client, AminoCommentStorage.prototype)
         if (array) {
             let members: AminoMember[] = community.cache.members.get()
@@ -21,7 +25,7 @@ export class AminoCommentStorage extends StorageBase<AminoComment> {
                 }
 
                 this.push(
-                    new AminoComment(this.client, community, blog, struct.commentId).setObject(struct)
+                    new AminoComment(this.client, community, page, struct.commentId).setObject(struct)
                 )
             })
         }

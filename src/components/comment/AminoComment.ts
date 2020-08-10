@@ -1,28 +1,34 @@
-import AminoClient, { AminoMember, AminoBlog, AminoCommunity, APIEndpoint ,request ,AminoComponentBase} from "../.."
+import AminoComponentBase from "../AminoComponentBase"
+import AminoMember from "../member/AminoMember"
+import AminoBlog from "../blog/AminoBlog"
+import AminoCommunity from "../community/AminoCommunity"
+import AminoClient, { request } from "../../index"
+import APIEndpoint from "../APIEndpoint"
+
 
 /**
  * Class for working with comments
  */
-export class AminoComment extends AminoComponentBase{
+export default class AminoComment extends AminoComponentBase {
 
     public id: string
     public content: string
 
     public author: AminoMember
 
-    public blog: AminoBlog
+    public page: AminoBlog | AminoMember
     public community: AminoCommunity
     /**
      * Comment constructor
      * @param {AminoClient} [client] client object
      * @param {AminoCommunity} [community] amino community
-     * @param {AminoBlog} [blog] community blog
+     * @param {AminoBlog} [page] community page
      * @param {string} [id] comment id
      */
-    constructor(client: AminoClient, community: AminoCommunity, blog: AminoBlog, id?: string) {
+    constructor(client: AminoClient, community: AminoCommunity, page: AminoBlog | AminoMember, id?: string) {
         super(client)
         this.community = community
-        this.blog = blog
+        this.page = page
         this.id = id
     }
 
@@ -30,7 +36,7 @@ export class AminoComment extends AminoComponentBase{
      * Method for updating the structure, by re-requesting information from the server
      */
     public refresh(): AminoComment {
-        let response = request("GET", APIEndpoint.compileGetComent(this.id,this.blog.id), {
+        let response = request("GET", APIEndpoint.compileGetComent(this.id, this.page.id), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session
             }

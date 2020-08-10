@@ -1,4 +1,10 @@
-import AminoClient, {request, AminoComponentBase, AminoMember, AminoChat, AminoCommunity, APIEndpoint } from "../.."
+import AminoClient from "../../index"
+import AminoComponentBase from "../AminoComponentBase"
+import AminoCommunity from "../community/AminoCommunity"
+import AminoMember from "../member/AminoMember"
+import AminoChat from "../chat/AminoChat"
+import APIEndpoint from "../APIEndpoint"
+import { request } from "../request"
 
 export enum message_type {
     COMMON = 0,
@@ -9,7 +15,7 @@ export enum message_type {
 /**
  * Class for working with messages
  */
-export class AminoMessage extends AminoComponentBase {
+export default class AminoMessage extends AminoComponentBase {
 
     public id: string
     public content: string
@@ -42,7 +48,7 @@ export class AminoMessage extends AminoComponentBase {
      * @param {string} [content] text to be sent
      */
     public reply(content: string): AminoMessage {
-        let response = request("POST", APIEndpoint.compileMessage(this.thread.id,this.community.id), {
+        let response = request("POST", APIEndpoint.compileMessage(this.thread.id, this.community.id), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session
             },
@@ -63,7 +69,7 @@ export class AminoMessage extends AminoComponentBase {
      * Method for calling the delete message procedure
      */
     public delete(): void {
-        let response = request("DELETE", APIEndpoint.compileMessageWithId(this.id,this.thread.id,this.community.id), {
+        let response = request("DELETE", APIEndpoint.compileMessageWithId(this.id, this.thread.id, this.community.id), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session
             }
@@ -74,7 +80,7 @@ export class AminoMessage extends AminoComponentBase {
      * Method for updating the structure, by re-requesting information from the server
      */
     public refresh(): AminoMessage {
-        let response = request("GET", APIEndpoint.compileMessageWithId(this.id,this.thread.id,this.community.id), {
+        let response = request("GET", APIEndpoint.compileMessageWithId(this.id, this.thread.id, this.community.id), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session
             }
