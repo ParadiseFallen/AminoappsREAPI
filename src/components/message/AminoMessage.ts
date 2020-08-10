@@ -1,13 +1,5 @@
-import AminoClient, {
-    request,
-    IAminoStorage,
-    AminoMember,
-    AminoThread,
-    AminoCommunity
-} from "./../../index"
-import { APIEndpoint } from "../APIEndpoint"
-import { AminoComponentBase } from "../ComponentModelBase"
-import StorageBase from "../storage"
+import AminoClient, {request, AminoComponentBase, AminoMember, AminoChat, AminoCommunity, APIEndpoint } from "../.."
+
 export enum message_type {
     COMMON = 0,
     INVITATION = 103,
@@ -28,17 +20,17 @@ export class AminoMessage extends AminoComponentBase {
     public replyMessage: AminoMessage
 
     public author: AminoMember
-    public thread: AminoThread
+    public thread: AminoChat
 
     public community: AminoCommunity
     /**
      * Message constructor
      * @param {AminoClient} [client] client object
      * @param {AminoCommunity} [communtity] communtiy object
-     * @param {AminoThread} [thread] thread object
+     * @param {AminoChat} [thread] thread object
      * @param {any} [id] message id
      */
-    constructor(client: AminoClient, community: AminoCommunity, thread?: AminoThread, id?: string) {
+    constructor(client: AminoClient, community: AminoCommunity, thread?: AminoChat, id?: string) {
         super(client)
         this.community = community
         this.thread = thread
@@ -95,9 +87,9 @@ export class AminoMessage extends AminoComponentBase {
      * Method for transferring json structure to a message object
      * @param {any} [object] json message structure
      * @param {AminoMember} [author] author object
-     * @param {AminoThread} [thread] thread object
+     * @param {AminoChat} [thread] thread object
      */
-    setObject(object: any, thread?: AminoThread, author?: AminoMember): AminoMessage {
+    setObject(object: any, thread?: AminoChat, author?: AminoMember): AminoMessage {
         this.id = object.messageId
         this.content = object.content
         this.createdTime = object.createdTime
@@ -106,54 +98,12 @@ export class AminoMessage extends AminoComponentBase {
         this.type = object.type
 
         this.author = author !== undefined ? author : new AminoMember(this.client, this.community, object.uid).refresh()
-        this.thread = thread !== undefined ? thread : new AminoThread(this.client, this.community, object.threadId).refresh()
+        this.thread = thread !== undefined ? thread : new AminoChat(this.client, this.community, object.threadId).refresh()
 
         if (object.extensions.replyMessageId !== undefined) {
             this.replyMessage = new AminoMessage(this.client, this.community, this.thread, object.extensions.replyMessageId)
         }
         return this
-    }
-}
-
-/**
- * Class for storing messages objects
- */
-export class AminoMessageStorage extends StorageBase<AminoMessage> {
-   
-    constructor(client: AminoClient, community: AminoCommunity, array?: any) {
-        super(client, AminoMessageStorage.prototype)
-        if (array) {
-            let members: AminoMember[] = community.cache.members.get()
-            let threads: AminoThread[] = community.cache.threads.get()
-            array.forEach(struct => {
-                let member: AminoMember
-                let member_index: number = members.findIndex(filter => filter.id === struct.uid)
-                if (member_index !== -1) {
-                    member = members[member_index]
-                } else {
-                    member = new AminoMember(this.client, community, struct.uid).refresh()
-                    community.cache.members.push(member)
-                    members.push(member)
-                }
-
-                let thread: AminoThread
-                let thread_index: number = threads.findIndex(filter => filter.id === struct.threadId)
-                if (thread_index !== -1) {
-                    thread = threads[thread_index]
-                } else {
-                    thread = new AminoThread(this.client, community, struct.threadId).refresh()
-                    community.cache.threads.push(thread)
-                    threads.push(thread)
-                }
-
-                this.push(
-                    new AminoMessage(this.client, community).setObject(struct, thread, member)
-                )
-            })
-        }
-    }
-    protected componentConstructor(client: AminoClient, elementData: any): AminoMessage {
-        return null
     }
 }
 

@@ -1,4 +1,5 @@
-import { blog_type, thread_type, thread_sort } from "../components/community/community"
+import { blog_type, thread_type, thread_sort } from "./community/AminoCommunity"
+
 /*
 *Static object that can build endpoint
 */

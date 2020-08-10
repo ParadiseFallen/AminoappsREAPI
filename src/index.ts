@@ -1,28 +1,43 @@
 import { request, requestAsync } from "./components/request"
-import IAminoCache from "./components/cache"
-import StorageBase from "./components/storage"
+
 
 import EventHandler, { event_type } from "./events/events"
-
-import { AminoCommunity, AminoCommunityStorage as AminoCommunityStorage } from "./components/community/community"
-import { AminoMember, AminoMemberStorage } from "./components/member/member"
-import { AminoChat, AminoThreadStorage, thread_type } from "./components/chat/chat"
-import { AminoMessage, AminoMessageStorage, message_type } from "./components/message/message"
-import { AminoBlog, AminoBlogStorage } from "./components/blog/blog"
-import { AminoComment, AminoCommentStorage } from "./components/comment/comment"
+///import components
+//community
+import { AminoCommunity } from "./components/community/AminoCommunity"
+import { AminoCommunityStorage } from "./components/community/AminoCommunityStorage"
+//member
+import { AminoMember } from "./components/member/AminoMember"
+import { AminoMemberStorage } from "./components/member/AminoMemberStorage"
+//chat
+import { AminoChat, thread_type } from "./components/chat/AminoChat"
+import { AminoChatStorage } from "./components/chat/AminoChatStorage"
+//message
+import { AminoMessage, message_type } from "./components/message/AminoMessage"
+import { AminoMessageStorage } from "./components/message/AminoMessageStorage"
+//blog
+import { AminoBlog } from "./components/blog/AminoBlog"
+import { AminoBlogStorage } from "./components/blog/AminoBlogStorage"
+//comment
+import { AminoComment } from "./components/comment/AminoComment"
+import { AminoCommentStorage } from "./components/comment/AminoCommentStorage"
+//utils
 import { APIEndpoint } from "./components/APIEndpoint"
+import IAminoCache from "./components/cache"
+import StorageBase from "./components/storage"
+import { AminoComponentBase }from "./components/AminoComponentBase"
 
 export {
     request,
     requestAsync,
     IAminoCache,
-    StorageBase as IAminoStorage,
+    StorageBase,
     AminoCommunityStorage,
     AminoCommunity,
     AminoMemberStorage,
     AminoMember,
-    AminoThreadStorage,
-    AminoChat as AminoThread,
+    AminoChatStorage,
+    AminoChat,
     thread_type,
     AminoMessageStorage,
     AminoMessage,
@@ -32,7 +47,8 @@ export {
     AminoCommentStorage,
     AminoComment,
     AminoClient,
-    APIEndpoint
+    APIEndpoint,
+    AminoComponentBase
 }
 
 /**

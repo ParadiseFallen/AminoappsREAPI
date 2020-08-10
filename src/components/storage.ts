@@ -1,5 +1,5 @@
-import AminoClient from "../index"
-import { AminoComponentBase } from "./ComponentModelBase"
+import AminoClient, { AminoComponentBase } from ".."
+
 /**
  * Base class for all storages
  */

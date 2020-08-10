@@ -1,15 +1,4 @@
-import AminoClient, {
-    request,
-    IAminoStorage,
-    AminoThread as AminoChat,
-    AminoCommunity,
-    AminoBlogStorage
-} from "./../../index"
-import { APIEndpoint } from "../APIEndpoint"
-import { AminoComponentBase } from "../ComponentModelBase"
-import { AminoMessage } from "../message/message"
-import StorageBase from "../storage"
-
+import AminoClient, { request,AminoComponentBase, AminoCommunity, AminoChat, APIEndpoint, AminoBlogStorage } from "../.."
 /**
  * Class for working with members
  */
@@ -118,39 +107,4 @@ export class AminoMember extends AminoComponentBase{
     }
 }
 
-/**
- * Class for storing members objects REWORK!
- */
-export class AminoMemberStorage extends StorageBase<AminoMember> {
-    
-    constructor(client: AminoClient, community: AminoCommunity, array?: any) {
-        super(client, AminoMemberStorage.prototype)
-        if (array) {
-            let members: AminoMember[] = community.cache.members.get()
-            array.forEach(struct => {
-                let member_index: number = members.findIndex(filter => filter.id === struct.threadId)
-                if (member_index !== -1) {
-                    this.push(members[member_index])
-                    return
-                }
-
-                let member = new AminoMember(this.client, community, struct.uid).setObject(struct)
-                this.push(member)
-                members.push(member)
-                community.cache.members.push(member)
-            })
-        }
-    }
-    protected componentConstructor(client: AminoClient, elementData: any): AminoMember {
-        return null
-    }
-
-    /**
-     * Call methods to update in structure objects
-     */
-    public reload() : AminoMemberStorage {
-        
-        return this
-    }
-}
 

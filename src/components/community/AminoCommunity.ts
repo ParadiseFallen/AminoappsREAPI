@@ -1,17 +1,5 @@
-import AminoClient, {
-    request,
-    IAminoCache,
-    IAminoStorage,
-    AminoMember,
-    AminoMemberStorage,
-    AminoThread,
-    AminoThreadStorage,
-    AminoBlogStorage,
-    requestAsync
-} from "./../../index"
-import { APIEndpoint } from "../APIEndpoint"
-import { AminoComponentBase } from "../ComponentModelBase"
-import StorageBase from "../storage"
+import AminoClient, { request,AminoComponentBase, AminoMember, IAminoCache, AminoChat, APIEndpoint, requestAsync, AminoMemberStorage, AminoBlogStorage, AminoChatStorage } from "../.."
+
 export declare type blog_type = ('featured-more' | 'featured' | 'blog-all')
 export declare type thread_sort = ('recommended' | 'popular' | 'latest')
 export declare type thread_type = ('joined-me' | 'public-all')
@@ -40,7 +28,7 @@ export class AminoCommunity extends AminoComponentBase{
 
     public cache: {
         members: IAminoCache<AminoMember>,
-        threads: IAminoCache<AminoThread>
+        threads: IAminoCache<AminoChat>
     }
 
     /**
@@ -52,7 +40,7 @@ export class AminoCommunity extends AminoComponentBase{
         super(client)
         this.cache = {
             members: new IAminoCache<AminoMember>(25),
-            threads: new IAminoCache<AminoThread>(25)
+            threads: new IAminoCache<AminoChat>(25)
         }
         this.id = id
     }
@@ -130,7 +118,7 @@ export class AminoCommunity extends AminoComponentBase{
      * @param {number} [size] number of records to read
      * @param {thread_sort} [sort] sorting type
      */
-    public getChats(type: thread_type, sort: thread_sort = "latest", start: number = 1, size: number = 10): AminoThreadStorage {
+    public getChats(type: thread_type, sort: thread_sort = "latest", start: number = 1, size: number = 10): AminoChatStorage {
         let response = request("GET", APIEndpoint.compileGetThreads(this.id,type,sort,start,size), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session,
@@ -138,7 +126,7 @@ export class AminoCommunity extends AminoComponentBase{
             }
         })
 
-        return new AminoThreadStorage(this.client, this, response.threadList)
+        return new AminoChatStorage(this.client, this, response.threadList)
     }
 
     /**
@@ -153,32 +141,6 @@ export class AminoCommunity extends AminoComponentBase{
         this.setObject(response)
         return this //Call chain support
     }
-    //# OBSOLETE
-    // /**
-    //  * Method for transferring json structure to a community object
-    //  * @param {any} [object] json community structure
-    //  * @param {AminoMember} [me] me object
-    //  * @param {AminoMember} [creator] creator object
-    //  */
-    // public _set_object(object: any, me?: AminoMember, creator?: AminoMember): AminoCommunity {
-    //     this.icon = object.community.icon
-    //     this.name = object.community.name
-    //     this.tagline = object.community.tagline
-    //     this.description = object.community.content
-    //     this.members_count = object.community.membersCount
-
-    //     this.me = me !== undefined ? me : new AminoMember(this.client, this, object.currentUserInfo.userProfile.uid).refresh()
-    //     this.creator = creator !== undefined ? creator : new AminoMember(this.client, this, object.community.agent.uid).refresh()
-
-    //     this.invite = object.community.link
-    //     this.createdTime = object.community.createdTime
-    //     this.createdTime = object.community.modifiedTime
-
-    //     this.keywords = object.community.keywords
-
-    //     return this //Call chain support
-    // }
-
     setObject(object: any): AminoCommunity {
         this.icon = object.community.icon
         this.name = object.community.name
@@ -198,40 +160,4 @@ export class AminoCommunity extends AminoComponentBase{
     }
 }
 
-/**
- * Class for storing community objects
- */
-export class AminoCommunityStorage extends StorageBase<AminoCommunity> {
-    /**
-     * ctor
-     * @param client ref to client
-     */    
-    constructor(client: AminoClient) {
-        super(client, AminoCommunityStorage.prototype)
-        request("GET", APIEndpoint.JoiniedCommunities, {
-            "headers": {
-                "NDCAUTH": "sid=" + this.client.session
-            }
-        }).communityList.forEach(community => {
-            this.push(new AminoCommunity(this.client, community.ndcId).refresh())
-        })
-    }
-
-    protected componentConstructor(client: AminoClient, elementData: any): AminoCommunity {
-
-        return new AminoCommunity(this.client, elementData.ndcId).refresh()
-    }
-    /**
-     * Call methods to update in structure objects
-     */
-    public reload() : AminoCommunityStorage {
-        super.reload(request("GET", APIEndpoint.JoiniedCommunities, {
-            "headers": {
-                "NDCAUTH": "sid=" + this.client.session
-            }
-        }).communityList)
-        
-        return this
-    }
-}
 

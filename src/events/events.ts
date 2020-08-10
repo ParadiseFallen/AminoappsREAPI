@@ -3,7 +3,7 @@ import AminoClient, {
     AminoMember,
     AminoMessage,
     message_type,
-    AminoThread
+    AminoChat
 } from "../index"
 
 const _debug: boolean = (process.argv.includes("--events-debug") || process.argv.includes("-ed"))
@@ -57,14 +57,14 @@ export default class EventHandler extends Events.EventEmitter {
                         let community: AminoCommunity = ref_client.communities.find(filter => filter.id = struct.o.ndcId)
 
                         let members: AminoMember[] = community.cache.members.get()
-                        let threads: AminoThread[] = community.cache.threads.get()
+                        let threads: AminoChat[] = community.cache.threads.get()
 
                         let thread_index: number = threads.findIndex(filter => filter.id === struct.o.chatMessage.threadId)
-                        let thread: AminoThread
+                        let thread: AminoChat
                         if (thread_index !== -1) {
                             thread = threads[thread_index]
                         } else {
-                            thread = new AminoThread(ref_client, community, struct.o.chatMessage.threadId).refresh()
+                            thread = new AminoChat(ref_client, community, struct.o.chatMessage.threadId).refresh()
                             community.cache.threads.push(thread)
                         }
 
