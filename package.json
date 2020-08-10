@@ -1,7 +1,7 @@
 {
   "name": "aminoapps-reapi",
   "description": "Unofficial client for working with rest-api aminoapps",
-  "version": "1.0.8",
+  "version": "1.0.0",
   "homepage": "https://github.com/ParadiseFallen/AminoappsREAPI",
   "author": "ParadiseFallen",
   "main": "build/index.js",

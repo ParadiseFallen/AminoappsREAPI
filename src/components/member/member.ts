@@ -1,33 +1,35 @@
 import AminoClient, {
     request,
     IAminoStorage,
-    AminoThread,
+    AminoThread as AminoChat,
     AminoCommunity,
     AminoBlogStorage
 } from "./../../index"
 import { APIEndpoint } from "../APIEndpoint"
+import { AminoComponentBase } from "../ComponentModelBase"
+import { AminoMessage } from "../message/message"
+import StorageBase from "../storage"
+
 /**
  * Class for working with members
  */
-export class AminoMember {
+export class AminoMember extends AminoComponentBase{
 
-    private client: AminoClient;
+    public id: string
+    public icon: string
+    public name: string
+    public onlineStatus: number
+    public membersCount: number
+    public reputation: number
+    public level: number
 
-    public id: string;
-    public icon: string;
-    public name: string;
-    public online_status: number;
-    public members_count: number;
-    public reputation: number;
-    public level: number;
+    public createdTime: string
+    public modifiedTime: string
 
-    public created_time: string;
-    public modified_time: string;
+    public blogsCount: number
+    public storiesCount: number
 
-    public blogs_count: number;
-    public stories_count: number;
-
-    public community: AminoCommunity;
+    public community: AminoCommunity
 
     /**
      * Member constructor
@@ -36,32 +38,32 @@ export class AminoMember {
      * @param {string} [id] member id
      */
     constructor(client: AminoClient, communtity: AminoCommunity, id?: string) {
-        this.client = client;
-        this.community = communtity;
-        this.id = id;
+        super(client)
+        this.community = communtity
+        this.id = id
     }
 
     /**
-     * Method for creating a thread
-     * @param {string} [initial_message] initial message for member
+     * Method for creating a thread to this member
+     * @param {string} [initialMessage] initial message for member
      */
-    public create_thread(initial_message: string): AminoThread {
-        let response = request("POST", APIEndpoint.CompileCreateThread(this.community.id), {
+    public createChat(initialMessage: string): AminoChat {
+        let response = request("POST", APIEndpoint.compileCreateThread(this.community.id), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session
             },
-
+            
             "json": {
                 "type": 0,
                 "inviteeUids": [
                     this.id
                 ],
-                "initialMessageContent": initial_message,
+                "initialMessageContent": initialMessage,
                 "timestamp": new Date().getTime()
             }
-        });
+        })
 
-        return new AminoThread(this.client, this.community)._set_object(response.thread, this);
+        return new AminoChat(this.client, this.community).setObject(response.thread, this)
     }
 
     /**
@@ -69,83 +71,86 @@ export class AminoMember {
      * @param {number} [start] start position
      * @param {number} [size] number of blogs to read
      */
-    public get_recent_blogs(start: number = 0, size: number = 10): AminoBlogStorage {
+    public getRecentBlogs(start: number = 0, size: number = 10): AminoBlogStorage {
         
-        let response = request("GET", APIEndpoint.CompileGetRecentBlogs(this.id,this.community.id,start,size), {
+        let response = request("GET", APIEndpoint.compileGetRecentBlogs(this.id,this.community.id,start,size), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session
             }
-        });
+        })
 
-        return new AminoBlogStorage(this.client, this.community, response.blogList);
+        return new AminoBlogStorage(this.client, this.community, response.blogList)
     }
 
     /**
      * Method for updating the structure, by re-requesting information from the server
      */
     public refresh(): AminoMember {
-        let response = request("GET", APIEndpoint.CompileGetMember(this.id,this.community.id), {
-            "headers": {
-                "NDCAUTH": "sid=" + this.client.session
-            }
-        });
-
-        return this._set_object(response.userProfile)
+        //maybe need in future to set session
+            // "headers": {
+            //     "NDCAUTH": "sid=" + this.client.session 
+            // }
+        let response = request("GET", APIEndpoint.compileProfile(this.community.id,this.id))
+        this.setObject(response.userProfile)
+        return this
     }
 
     /**
      * Method for transferring json structure to a member object
      * @param {any} [object] json member structure
      */
-    public _set_object(object: any): AminoMember {
-        this.id = object.uid;
-        this.icon = object.icon;
-        this.name = object.nickname;
-        this.online_status = object.onlineStatus;
-        this.members_count = object.membersCount;
-        this.reputation = object.reputation;
-        this.level = object.level;
+    setObject(object: any): AminoMember {
+        this.id = object.uid
+        this.icon = object.icon
+        this.name = object.nickname
+        this.onlineStatus = object.onlineStatus
+        this.membersCount = object.membersCount
+        this.reputation = object.reputation
+        this.level = object.level
 
-        this.created_time = object.createdTime;
-        this.modified_time = object.modifiedTime;
+        this.createdTime = object.createdTime
+        this.modifiedTime = object.modifiedTime
 
-        this.blogs_count = object.blogsCount;
-        this.stories_count = object.storiesCount;
+        this.blogsCount = object.blogsCount
+        this.storiesCount = object.storiesCount
 
-        return this;
+        return this
     }
-};
+}
 
 /**
- * Class for storing members objects
+ * Class for storing members objects REWORK!
  */
-export class AminoMemberStorage extends IAminoStorage<AminoMember> {
+export class AminoMemberStorage extends StorageBase<AminoMember> {
+    
     constructor(client: AminoClient, community: AminoCommunity, array?: any) {
-        super(client, AminoMemberStorage.prototype);
+        super(client, AminoMemberStorage.prototype)
         if (array) {
-            let members: AminoMember[] = community.cache.members.get();
+            let members: AminoMember[] = community.cache.members.get()
             array.forEach(struct => {
-                let member_index: number = members.findIndex(filter => filter.id === struct.threadId);
+                let member_index: number = members.findIndex(filter => filter.id === struct.threadId)
                 if (member_index !== -1) {
-                    this.push(members[member_index]);
-                    return;
+                    this.push(members[member_index])
+                    return
                 }
 
-                let member = new AminoMember(this.client, community, struct.uid)._set_object(struct);
-                this.push(member);
-                members.push(member);
-                community.cache.members.push(member);
-            });
+                let member = new AminoMember(this.client, community, struct.uid).setObject(struct)
+                this.push(member)
+                members.push(member)
+                community.cache.members.push(member)
+            })
         }
+    }
+    protected componentConstructor(client: AminoClient, elementData: any): AminoMember {
+        return null
     }
 
     /**
      * Call methods to update in structure objects
      */
-    public refresh() {
-        for (let i = 0; i < this.length; i++) {
-            this[i].refresh();
-        }
+    public reload() : AminoMemberStorage {
+        
+        return this
     }
-};
+}
 

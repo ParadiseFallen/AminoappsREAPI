@@ -1,12 +1,12 @@
+import { request, requestAsync } from "./components/request"
 import IAminoCache from "./components/cache"
-import { request,requestAsync } from "./request"
-import IAminoStorage from "./components/storage"
+import StorageBase from "./components/storage"
 
 import EventHandler, { event_type } from "./events/events"
 
 import { AminoCommunity, AminoCommunityStorage as AminoCommunityStorage } from "./components/community/community"
 import { AminoMember, AminoMemberStorage } from "./components/member/member"
-import { AminoThread, AminoThreadStorage, thread_type } from "./components/thread/thread"
+import { AminoChat, AminoThreadStorage, thread_type } from "./components/chat/chat"
 import { AminoMessage, AminoMessageStorage, message_type } from "./components/message/message"
 import { AminoBlog, AminoBlogStorage } from "./components/blog/blog"
 import { AminoComment, AminoCommentStorage } from "./components/comment/comment"
@@ -16,13 +16,13 @@ export {
     request,
     requestAsync,
     IAminoCache,
-    IAminoStorage,
+    StorageBase as IAminoStorage,
     AminoCommunityStorage,
     AminoCommunity,
     AminoMemberStorage,
     AminoMember,
     AminoThreadStorage,
-    AminoThread,
+    AminoChat as AminoThread,
     thread_type,
     AminoMessageStorage,
     AminoMessage,
@@ -35,15 +35,21 @@ export {
     APIEndpoint
 }
 
+/**
+ * main class that provide 
+ * connection
+ * events
+ * methods for communities
+ */
 export default class AminoClient {
 
-    public communities: AminoCommunityStorage;
+    public communities: AminoCommunityStorage
+    //current session
+    public session: string
+    //devideID 
+    public device: string
 
-    public session: string;
-    public device: string;
-
-    private _eventHandler: EventHandler;
-
+    private _eventHandler: EventHandler
     /**
      * Initialization of the main client
      * @param {string} [login] user login
@@ -51,7 +57,7 @@ export default class AminoClient {
      * @param {string} [device] user device id
      */
     constructor(login: string, password: string, device: string) {
-        this.device = device;
+        this.device = device
         this.session = request("POST", APIEndpoint.Login, {
             "json": {
                 "email": login,
@@ -61,20 +67,26 @@ export default class AminoClient {
                 "action": "normal",
                 "timestamp": new Date().getTime()
             }
-        }).sid;
-        this.communities = new AminoCommunityStorage(this);
+        }).sid
+        this.communities = new AminoCommunityStorage(this)
     }
-    
-    public on(event: event_type, callback: any) {
+
+    /**
+     * Subscribe to socket events
+     * @param event socket event type
+     * @param callback any callback
+     */
+    public onSocketEvent(event: event_type, callback: any) {
         if (this._eventHandler === undefined) {
-            this._eventHandler = new EventHandler(this);
+            this._eventHandler = new EventHandler(this)
         }
-        this._eventHandler.on(event, callback);
+        this._eventHandler.on(event, callback)
     }
+    /**
+     * Subscribe on message event
+     * @param callback callback (x:AminoMessage)=>{}
+     */
     public onMessage(callback: any) {
-        if (this._eventHandler === undefined) {
-            this._eventHandler = new EventHandler(this);
-        }
-        this._eventHandler.on("message", callback);
+        this.onSocketEvent('message', callback)
     }
-};
+}

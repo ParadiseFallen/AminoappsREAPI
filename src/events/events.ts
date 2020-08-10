@@ -6,96 +6,96 @@ import AminoClient, {
     AminoThread
 } from "../index"
 
-const _debug: boolean = (process.argv.includes("--events-debug") || process.argv.includes("-ed"));
+const _debug: boolean = (process.argv.includes("--events-debug") || process.argv.includes("-ed"))
 
-import Events = require("events");
-import WebSocket = require("ws");
+import Events = require("events")
+import WebSocket = require("ws")
 
-export declare type event_type = ('message');
+export declare type event_type = ('message')
 
 export default class EventHandler extends Events.EventEmitter {
 
-    public client: AminoClient;
-    public socket: WebSocket;
+    public client: AminoClient
+    public socket: WebSocket
 
     constructor(client: AminoClient) {
-        super();
-        this.client = client;
+        super()
+        this.client = client
         this.socket = new WebSocket(
             `wss://ws1.narvii.com/?signbody=${this.client.device}%7C${new Date().getTime()}`, {
             "headers": {
                 "NDCDEVICEID": this.client.device,
                 "NDCAUTH": `sid=${this.client.session}`
             }
-        });
-        this.set_callbacks();
+        })
+        this.set_callbacks()
     }
 
     public set_callbacks() {
-        let ref_client: AminoClient = this.client;
+        let ref_client: AminoClient = this.client
         this.socket.on("open", () => {
-            if (_debug) { console.log("[SOCKET]: OPEN : Socket was connected!"); }
-        });
+            if (_debug) { console.log("[SOCKET]: OPEN : Socket was connected!") }
+        })
 
         this.socket.on("error", (error: any) => {
-            if (_debug) { console.log(`[SOCKET]: ERROR : ${error}`); }
-            process.exit(-1);
-        });
+            if (_debug) { console.log(`[SOCKET]: ERROR : ${error}`) }
+            process.exit(-1)
+        })
 
-        var that = this;
+        var that = this
         this.socket.on("close", () => {
-            if (_debug) { console.log(`[SOCKET]: CLOSE : Connection was closed!`); }
-            that.reconnect();
-        });
+            if (_debug) { console.log(`[SOCKET]: CLOSE : Connection was closed!`) }
+            that.reconnect()
+        })
 
         this.socket.on("message", (message: string) => {
-            let struct: any = JSON.parse(message);
-            if (_debug) { console.log(`[SOCKET]: RESPONSE : ${message}`); }
+            let struct: any = JSON.parse(message)
+            if (_debug) { console.log(`[SOCKET]: RESPONSE : ${message}`) }
             switch (struct.t) {
                 case (1000): {
                     if (Object.values(message_type).includes(struct.o.chatMessage.type)) {
-                        let community: AminoCommunity = ref_client.communities.find(filter => filter.id = struct.o.ndcId);
+                        let community: AminoCommunity = ref_client.communities.find(filter => filter.id = struct.o.ndcId)
 
-                        let members: AminoMember[] = community.cache.members.get();
-                        let threads: AminoThread[] = community.cache.threads.get();
+                        let members: AminoMember[] = community.cache.members.get()
+                        let threads: AminoThread[] = community.cache.threads.get()
 
-                        let thread_index: number = threads.findIndex(filter => filter.id === struct.o.chatMessage.threadId);
-                        let thread: AminoThread;
+                        let thread_index: number = threads.findIndex(filter => filter.id === struct.o.chatMessage.threadId)
+                        let thread: AminoThread
                         if (thread_index !== -1) {
-                            thread = threads[thread_index];
+                            thread = threads[thread_index]
                         } else {
-                            thread = new AminoThread(ref_client, community, struct.o.chatMessage.threadId).refresh();
-                            community.cache.threads.push(thread);
+                            thread = new AminoThread(ref_client, community, struct.o.chatMessage.threadId).refresh()
+                            community.cache.threads.push(thread)
                         }
 
-                        let member_index: number = members.findIndex(filter => filter.id === struct.o.chatMessage.author.uid);
-                        let member: AminoMember;
+                        let member_index: number = members.findIndex(filter => filter.id === struct.o.chatMessage.author.uid)
+                        let member: AminoMember
                         if (member_index !== -1) {
-                            member = members[member_index];
+                            member = members[member_index]
                         } else {
-                            member = new AminoMember(ref_client, community, struct.o.chatMessage.author.uid).refresh();
-                            community.cache.members.push(member);
+                            member = new AminoMember(ref_client, community, struct.o.chatMessage.author.uid).refresh()
+                            community.cache.members.push(member)
                         }
-                        let recievdMessage = new AminoMessage(ref_client, community)._set_object(struct.o.chatMessage, thread, member)
+                        let recievdMessage = new AminoMessage(ref_client, community).setObject(struct.o.chatMessage, thread, member)
                         if(recievdMessage.author.id!==recievdMessage.community.me.id) //if message not mine
-                            this.emit("message", recievdMessage);
+                            this.emit("message", recievdMessage)
                     }
-                    break;
+                    break
                 }
             }
-        });
+        })
     }
 
     public reconnect() {
-        this.socket.removeAllListeners();
+        this.socket.removeAllListeners()
         this.socket = new WebSocket(
             `wss://ws1.narvii.com/?signbody=${this.client.device}%7C${new Date().getTime()}`, {
             "headers": {
                 "NDCDEVICEID": this.client.device,
                 "NDCAUTH": `sid=${this.client.session}`
             }
-        });
-        this.set_callbacks();
+        })
+        this.set_callbacks()
     }
 
-};
+}

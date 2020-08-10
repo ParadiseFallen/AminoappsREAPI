@@ -6,37 +6,37 @@ import AminoClient, {
     AminoCommunity,
     AminoMessage,
     APIEndpoint
-} from "./../../index"
+} from "../../index"
+import { AminoComponentBase } from "../ComponentModelBase"
+import StorageBase from "../storage"
 
-declare type image_type = ('image/png' | 'image/jpg');
+declare type image_type = ('image/png' | 'image/jpg')
 
 export enum thread_type {
     PRIVATE = 0,
     GROUP = 1,
     PUBLIC = 2
-};
+}
 
 /**
- * Class for working with threads
+ * Class for working with chats
  */
-export class AminoThread {
+export class AminoChat extends AminoComponentBase {
 
-    private client: AminoClient;
+    public id: any
+    public icon: string
+    public title: string
+    public description: string
 
-    public id: any;
-    public icon: string;
-    public title: string;
-    public description: string;
+    public creator: AminoMember
 
-    public creator: AminoMember;
+    public membersQuota: number
+    public membersCount: number
+    public keywords: any
 
-    public membersQuota: number;
-    public membersCount: number;
-    public keywords: any;
+    public type: thread_type
 
-    public type: thread_type;
-
-    public community: AminoCommunity;
+    public community: AminoCommunity
 
     /**
      * Thread constructor
@@ -45,24 +45,24 @@ export class AminoThread {
      * @param {string} [id] thread id
      */
     constructor(client: AminoClient, communtity: AminoCommunity, id?: string) {
-        this.client = client;
-        this.community = communtity;
-        this.id = id;
+        super(client)
+        this.community = communtity
+        this.id = id
     }
 
     /**
      * Method for receiving thread messages
      * @param {number} [count] number of messages
      */
-    public get_message_list(count: number = 10): AminoMessageStorage {
+    public getMessageList(count: number = 10): AminoMessageStorage {
         
-        let response = request("GET", APIEndpoint.CompileGetMessageList(this.id,this.community.id,count), {
+        let response = request("GET", APIEndpoint.compileGetMessageList(this.id,this.community.id,count), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session
             }
-        });
+        })
 
-        return new AminoMessageStorage(this.client, this.community, response.messageList);
+        return new AminoMessageStorage(this.client, this.community, response.messageList)
     }
 
     /**
@@ -70,8 +70,8 @@ export class AminoThread {
      * @param {string} [content] text to be sent
      * @param {string} [image] path to the image
      */
-    public send_message(content: string): AminoMessage {
-        let response = request("POST", APIEndpoint.CompileMessage(this.id,this.community.id), {
+    public sendMessage(content: string): AminoMessage {
+        let response = request("POST", APIEndpoint.compileMessage(this.id,this.community.id), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session
             },
@@ -82,9 +82,9 @@ export class AminoThread {
                 "clientRefId": 827027430,
                 "timestamp": new Date().getTime()
             })
-        });
+        })
 
-        return new AminoMessage(this.client, this.community, this)._set_object(response.message, this, this.community.me);
+        return new AminoMessage(this.client, this.community, this).setObject(response.message, this, this.community.me)
     }
 
     /**
@@ -92,12 +92,12 @@ export class AminoThread {
      * @param {string} [content] text to be sent
      * @param {{path: string, link: string }} [image] extension structure
      */
-    public send_extension(content: string, extension: {
+    public sendExtension(content: string, extension: {
         image: Buffer,
         type: image_type,
         link: string
     }): AminoMessage {
-        let response = request("POST", APIEndpoint.CompileMessage(this.id,this.community.id), {
+        let response = request("POST", APIEndpoint.compileMessage(this.id,this.community.id), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session
             },
@@ -117,9 +117,9 @@ export class AminoThread {
                     }]
                 }
             })
-        });
+        })
 
-        return new AminoMessage(this.client, this.community, this)._set_object(response.message, this, this.community.me);
+        return new AminoMessage(this.client, this.community, this).setObject(response.message, this, this.community.me) as AminoMessage
     }
 
     /**
@@ -127,8 +127,8 @@ export class AminoThread {
      * @param {string} [image] buffer with image
      * @param {image_type} [type] image type
      */
-    public send_image(image: Buffer, type: image_type): AminoMessage {
-        let response = request("POST", APIEndpoint.CompileMessage(this.id,this.community.id), {
+    public sendImage(image: Buffer, type: image_type): AminoMessage {
+        let response = request("POST", APIEndpoint.compileMessage(this.id,this.community.id), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session
             },
@@ -144,17 +144,17 @@ export class AminoThread {
                 "mediaUhqEnabled": false,
                 "attachedObject": null
             })
-        });
+        })
 
-        return new AminoMessage(this.client, this.community, this)._set_object(response.message, this, this.community.me);
+        return new AminoMessage(this.client, this.community, this).setObject(response.message, this, this.community.me)
     }
 
     /**
      * Method for sending audio messages to thread
      * @param {string} [audio] path to audio file
      */
-    public send_audio(audio: Buffer): AminoMessage {
-        let response = request("POST", APIEndpoint.CompileMessage(this.id,this.community.id), {
+    public sendAudio(audio: Buffer): AminoMessage {
+        let response = request("POST", APIEndpoint.compileMessage(this.id,this.community.id), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session
             },
@@ -168,20 +168,20 @@ export class AminoThread {
                 "mediaUploadValue": audio,
                 "attachedObject": null
             })
-        });
+        })
 
-        return new AminoMessage(this.client, this.community, this)._set_object(response.message, this, this.community.me);
+        return new AminoMessage(this.client, this.community, this).setObject(response.message, this, this.community.me)
     }
 
     /**
      * Method for join to thread
      */
     public join(): void {
-        let response = request("POST", APIEndpoint.CompileThreadWithMember(this.id,this.community.id,this.community.me.id), {
+        let response = request("POST", APIEndpoint.compileThreadWithMember(this.id,this.community.id,this.community.me.id), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session
             }
-        });
+        })
     }
 
     /**
@@ -189,23 +189,24 @@ export class AminoThread {
      */
     public leave(): void {
         
-        let response = request("DELETE", APIEndpoint.CompileThreadWithMember(this.id,this.community.id,this.community.me.id), {
+        let response = request("DELETE", APIEndpoint.compileThreadWithMember(this.id,this.community.id,this.community.me.id), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session
             }
-        });
+        })
     }
 
     /**
      * Method for updating the structure, by re-requesting information from the server
      */
-    public refresh(): AminoThread {
-        let response = request("GET", APIEndpoint.CompileThread(this.id,this.community.id), {
+    public refresh(): AminoChat {
+        let response = request("GET", APIEndpoint.compileThread(this.id,this.community.id), {
             "headers": {
                 "NDCAUTH": "sid=" + this.client.session
             }
-        });
-        return this._set_object(response.thread);
+        })
+        this.setObject(response.thread)
+        return this
     }
 
     /**
@@ -213,65 +214,59 @@ export class AminoThread {
      * @param {any} [object] json thread structure
      * @param {AminoMember} [creator] creator object
      */
-    public _set_object(object: any, creator?: AminoMember): AminoThread {
-        this.id = object.threadId;
+    setObject(object: any,creator?: AminoMember): AminoChat {
+        this.id = object.threadId
 
-        this.icon = object.icon;
-        this.title = object.title;
-        this.description = object.content;
-        this.membersQuota = object.membersQuota;
-        this.membersCount = object.membersCount;
-        this.keywords = object.keywords;
+        this.icon = object.icon
+        this.title = object.title
+        this.description = object.content
+        this.membersQuota = object.membersQuota
+        this.membersCount = object.membersCount
+        this.keywords = object.keywords
 
-        this.type = object.type;
+        this.type = object.type
 
-        this.creator = creator !== undefined ? creator : new AminoMember(this.client, this.community, object.author.uid).refresh();
-
-        return this;
+        this.creator = creator !== undefined ? creator : new AminoMember(this.client, this.community, object.author.uid).refresh()
+        return this
     }
-};
+}
 
 /**
  * Class for storing thread objects
  */
-export class AminoThreadStorage extends IAminoStorage<AminoThread> {
+export class AminoThreadStorage extends StorageBase<AminoChat> {
+    
     constructor(client: AminoClient, community: AminoCommunity, array?: any) {
-        super(client, AminoThreadStorage.prototype);
+        super(client, AminoThreadStorage.prototype)
         if (array) {
-            let threads: AminoThread[] = community.cache.threads.get();
-            let members: AminoMember[] = community.cache.members.get();
+            let threads: AminoChat[] = community.cache.threads.get()
+            let members: AminoMember[] = community.cache.members.get()
             array.forEach(struct => {
-                let thread_index: number = threads.findIndex(filter => filter.id === struct.threadId);
+                let thread_index: number = threads.findIndex(filter => filter.id === struct.threadId)
                 if (thread_index !== -1) {
-                    this.push(threads[thread_index]);
-                    return;
+                    this.push(threads[thread_index])
+                    return
                 }
 
-                let member_index: number = members.findIndex(filter => filter.id === struct.author.uid);
-                let member: AminoMember;
+                let member_index: number = members.findIndex(filter => filter.id === struct.author.uid)
+                let member: AminoMember
                 if (member_index !== -1) {
-                    member = members[member_index];
+                    member = members[member_index]
                 } else {
-                    member = new AminoMember(this.client, community, struct.author.uid).refresh();
-                    community.cache.members.push(member);
-                    members.push(member);
+                    member = new AminoMember(this.client, community, struct.author.uid).refresh()
+                    community.cache.members.push(member)
+                    members.push(member)
                 }
 
-                let thread = new AminoThread(this.client, community, struct.threadId)._set_object(struct, member);
-                this.push(thread);
-                threads.push(thread);
-                community.cache.threads.push(thread);
-            });
+                let thread = new AminoChat(this.client, community, struct.threadId).setObject(struct, member) as AminoChat
+                this.push(thread)
+                threads.push(thread)
+                community.cache.threads.push(thread)
+            })
         }
     }
-
-    /**
-     * Call methods to update in structure objects
-     */
-    public refresh() {
-        for (let i = 0; i < this.length; i++) {
-            this[i].refresh();
-        }
+    protected componentConstructor(client: AminoClient, elementData: any): AminoChat {
+        return null
     }
-};
+}
 
