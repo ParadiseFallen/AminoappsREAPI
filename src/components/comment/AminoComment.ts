@@ -31,7 +31,67 @@ export default class AminoComment extends AminoComponentBase {
         this.page = page
         this.id = id
     }
-
+    /**
+     * change comment content
+     * @param newText 
+     */
+    public changeText(newText : string) : AminoComment
+    {
+        let response : any
+        if (this.page instanceof AminoMember)
+        {
+            response = request('POST', APIEndpoint.compileProfileComent(this.community.id, this.author.id) + `/${this.id}`, {
+                "headers": {
+                    "NDCAUTH": "sid=" + this.client.session,
+                },
+                "body": JSON.stringify({
+                    "content": newText,
+                    "timestamp": new Date().getTime()
+                })
+            })
+        }
+        if(response)
+            this.setObject(response.comment)
+        return this
+    }
+    /**
+     * reply on comment
+     * @param content reply text
+     */
+    public reply(content : string) : AminoComment
+    {
+        let response : any
+        if (this.page instanceof AminoMember)
+        {
+            response = request('POST', APIEndpoint.compileProfileComent(this.community.id, this.author.id), {
+                "headers": {
+                    "NDCAUTH": "sid=" + this.client.session,
+                },
+                "body": JSON.stringify({
+                    "content": content,
+                    "respondTo" : `${this.id}`,
+                    "timestamp": new Date().getTime()
+                })
+            })
+        }
+        if(response)
+            this.setObject(response.comment)
+        return this
+    }
+    /**
+     * Delete comment
+     */
+    public delete()
+    {
+        if (this.page instanceof AminoMember)
+        {
+            request('DELETE', APIEndpoint.compileProfileComent(this.community.id, this.author.id) + `/${this.id}`, {
+                "headers": {
+                    "NDCAUTH": "sid=" + this.client.session,
+                },
+            })
+        }
+    }
     /**
      * Method for updating the structure, by re-requesting information from the server
      */

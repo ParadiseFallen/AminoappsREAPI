@@ -1,4 +1,4 @@
-import { request, requestAsync } from "./components/request"
+import { request, requestAsync,expandUrl } from "./components/request"
 
 
 import EventHandler, { event_type } from "./events/events"
@@ -30,6 +30,7 @@ import AminoComponentBase from "./components/AminoComponentBase"
 export {
     request,
     requestAsync,
+    expandUrl,
     IAminoCache,
     StorageBase,
     AminoCommunityStorage,
