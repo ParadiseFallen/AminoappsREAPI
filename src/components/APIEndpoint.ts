@@ -29,7 +29,10 @@ export default class APIEndpoint {
     static compileProfileComent(communityId: number, userId: string): string {
         return APIEndpoint.compileProfile(communityId, userId) + `/comment`
     }
-
+    static compileLinkResolution(shortUserId :string) : string
+    {
+        return APIEndpoint.Prefix+ `/g/s/link-resolution?q=${shortUserId}`
+    }
 
     static compileGetBlog(blogId: string, communityId: number): string {
         return APIEndpoint.Prefix + `/x${communityId}/s/blog/${blogId}`

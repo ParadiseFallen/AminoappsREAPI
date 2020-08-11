@@ -9,7 +9,7 @@ import StorageBase from "../storage"
  */
 export default class AminoCommentStorage extends StorageBase<AminoComment> {
 
-    constructor(client: AminoClient, community: AminoCommunity, page: AminoBlog | AminoMember, array?: any) {
+    constructor(client: AminoClient, community: AminoCommunity, page: AminoBlog | AminoMember, array?: any,parentComment? : AminoComment) {
         super(client, AminoCommentStorage.prototype)
         if (array) {
             let members: AminoMember[] = community.cache.members.get()
@@ -25,7 +25,7 @@ export default class AminoCommentStorage extends StorageBase<AminoComment> {
                 }
 
                 this.push(
-                    new AminoComment(this.client, community, page, struct.commentId).setObject(struct)
+                    new AminoComment(this.client, community, page, struct.commentId).setObject(struct,undefined, parentComment)
                 )
             })
         }

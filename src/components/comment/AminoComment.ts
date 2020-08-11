@@ -4,6 +4,7 @@ import AminoBlog from "../blog/AminoBlog"
 import AminoCommunity from "../community/AminoCommunity"
 import AminoClient, { request } from "../../index"
 import APIEndpoint from "../APIEndpoint"
+import AminoCommentStorage from "./AminoCommentStorage"
 
 
 /**
@@ -13,11 +14,12 @@ export default class AminoComment extends AminoComponentBase {
 
     public id: string
     public content: string
-
+    public parentComent : AminoComment
     public author: AminoMember
 
     public page: AminoBlog | AminoMember
     public community: AminoCommunity
+    public subcomments : AminoCommentStorage
     /**
      * Comment constructor
      * @param {AminoClient} [client] client object
@@ -52,6 +54,25 @@ export default class AminoComment extends AminoComponentBase {
         }
         if(response)
             this.setObject(response.comment)
+        return this
+    }
+    public setCommentLike(value:number): AminoComment
+    {
+        let response : any
+        if (this.page instanceof AminoMember)
+        {
+            response = request('POST', APIEndpoint.compileProfileComent(this.community.id, this.author.id) + `/${this.id}/vote`, {
+                "headers": {
+                    "NDCAUTH": "sid=" + this.client.session,
+                },
+                "body": JSON.stringify({
+                    "value": value,
+                    "timestamp": new Date().getTime()
+                })
+            })
+        }
+        // if(response)
+            // this.setObject(response.comment)
         return this
     }
     /**
@@ -110,12 +131,15 @@ export default class AminoComment extends AminoComponentBase {
      * @param {any} [object] json community structure
      * @param {AminoMember} [author] comment author object
      */
-    public setObject(object: any, author?: AminoMember): AminoComment {
+    public setObject(object: any, author: AminoMember = undefined, parentComment : AminoComment = undefined): AminoComment {
         this.id = object.commentId
         this.content = object.content
+        if(object.subcommentsCount)
+            this.subcomments = new AminoCommentStorage(this.client,this.community,this.page,object.subcommentsPreview,this)
+        this.parentComent = parentComment
 
         this.author = author !== undefined ? author : new AminoMember(this.client, this.community, object.author.uid).refresh()
-
+        this.parentComent = parentComment
         return this
     }
 }

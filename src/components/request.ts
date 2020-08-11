@@ -13,23 +13,7 @@ export function request(method: library.HttpVerb, url: string, options?: library
         )
     }
 }
-/**
- * in work!
- * @param url 
- * @param options 
- */
-export function expandUrl( url: string, options?: library.Options | any): any
-{
-    try {
-        if (debug) console.log(`[REQUEST]: GET : ${url}`)
-        return library.default('GET', url, options).url
-    } catch (error) {
-        console.error(error)
-        throw new Error(
-            error.body
-        )
-    }
-}
+
 export async function requestAsync(method: library.HttpVerb, url: string, options?: library.Options | any): Promise<any> {
     try {
         if (debug) console.log(`[REQUEST]: ${method} : ${url}`)

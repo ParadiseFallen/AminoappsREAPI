@@ -119,7 +119,21 @@ export default class AminoCommunity extends AminoComponentBase {
 
         return new AminoBlogStorage(this.client, this, response.blogList)
     }
-
+    public userProfileFromLink(message : string)
+    {
+        let extractUrlRegex = "http:\/\/aminoapps\.com\/p\/([a-z0-9]+)"
+        let shortUserId = message.match(extractUrlRegex)[1]
+        if(!shortUserId)
+            return null
+        let linkInfoV2 : string = request('GET',APIEndpoint.compileLinkResolution(shortUserId),{
+            "headers": {
+                "NDCAUTH": "sid=" + this.client.session
+            }
+        }).linkInfoV2.path
+        let userId : string = linkInfoV2.split('/')[2]
+        
+        return new AminoMember(this.client,this,userId).refresh()
+    }
     /**
      * Method for getting a list of chat threads
      * @param {thread_type} [type] number of records to read
